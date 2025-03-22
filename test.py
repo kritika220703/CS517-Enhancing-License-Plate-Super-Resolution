@@ -14,7 +14,7 @@ from tqdm import tqdm
 from PIL import Image
 from pathlib import Path
 from Levenshtein import distance
-from train import make_dataloader
+from ParallelNetTrain import make_dataloader
 from matplotlib import pyplot as plt
 import torchvision.transforms as T
 import kornia as K
