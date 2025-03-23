@@ -1,6 +1,6 @@
 model:
   name: cgnetV2_deformable
-  load: ./save/_cgnetV2_deformable_test/best_model_cgnetV2_deformable_Epoch_82.pth
+  load: /content/CS517-Enhancing-License-Plate-Super-Resolution/best_model_cgnetV2_deformable_Epoch_82.pth
   args:
     in_channels: 3
     out_channels: 3
@@ -14,7 +14,7 @@ test_dataset:
   dataset:
     name: parallel_training
     args:
-      path_split: ./split_all_rodosol.txt
+      path_split: /content/drive/MyDrive/rodosol/split_all_rodosol.txt
       phase: testing
 
   wrapper:
