@@ -8,7 +8,7 @@ model:
 model_ocr:
   name: ocr
   args:
-    load: ./models_ocr_pre_trained/RodoSol-SR
+    load: /content/drive/MyDrive/models_ocr_pre_trained/RodoSol-SR
 
 test_dataset:
   dataset:
