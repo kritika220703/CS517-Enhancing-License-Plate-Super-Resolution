@@ -29,10 +29,11 @@ def prepare_testing():
     
     # Load the super-resolution (SR) model
     sv_file = config['model']
-    sv_file = torch.load(sv_file['load'])
+    sv_file = torch.load(sv_file['load'], map_location=torch.device('cpu'))
     
     # Create the SR model based on the loaded model specifications
-    model_sr = models.make(sv_file['model'], load_model=True).cuda()
+    # model_sr = models.make(sv_file['model'], load_model=True).cuda()
+    model_sr = models.make(sv_file['model'], load_model=True).to(torch.device("cpu"))
     
     # Check the number of available GPUs
     n_gpus = torch.cuda.device_count()
