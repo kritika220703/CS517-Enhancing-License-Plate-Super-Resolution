@@ -3,13 +3,16 @@ import re
 import cv2
 import numpy as np
 import tensorflow as tf
+import keras
 
 from keras.models import model_from_json
-from tensorflow.keras.utils import img_to_array
+from tensorflow.keras.utils import img_to_array,get_custom_objects
+from tensorflow.keras.models import Model
 
 from pathlib import Path
 from models import register
 
+@tf.keras.utils.register_keras_serializable(package="Custom", name="Ocr_rodosol")
 @register('ocr')
 class Ocr_rodosol():
     def __init__(self, load=None):
@@ -33,7 +36,8 @@ class Ocr_rodosol():
         if load is not None:
             self.load = Path(load)
             self.OCR = load_model(self.load.as_posix())
-            self.IMAGE_DIMS = self.OCR.layers[0].input_shape[0][1:]
+            # self.IMAGE_DIMS = self.OCR.layers[0].input_shape[0][1:]
+            self.IMAGE_DIMS = self.OCR.input_shape[1:]  # Directly use model's input shape
             self.parameters = np.load(self.load.as_posix() + '/parameters.npy', allow_pickle=True).item()
             self.tasks = self.parameters['tasks']
             self.ocr_classes = self.parameters['ocr_classes']
@@ -45,6 +49,17 @@ class Ocr_rodosol():
             self.OCR.compile()
         else:
             self.load = None
+
+    def get_config(self):
+      """ Required for serialization """
+      return {
+          "load": str(self.load) if self.load else None
+      }
+
+    @classmethod
+    def from_config(cls, config):
+      """ Allows re-creating the class from config """
+      return cls(load=config["load"])
 
     
     def OCR_pred(self, img, fl = None, convert_to_bgr=False):
@@ -78,7 +93,9 @@ def load_model(path):
 	with open(path + '/model.json', 'r') as f:
 		json = f.read()
 
-	model = model_from_json(json)
+  # get_custom_objects()["Model"] = Model  
+
+	model = model_from_json(json, custom_objects={"Model": Model, "Ocr_rodosol": Ocr_rodosol})
 	model.load_weights(path + '/weights.hdf5')
         
 	return model
