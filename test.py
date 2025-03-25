@@ -73,8 +73,10 @@ def test(test_loader, model_sr, model_ocr, save_path):
                 batch['lr'][0], batch['lr'][1] = batch['lr'][0].cuda(), batch['lr'][1].cuda()                
                 
             # Generate super-resolved (SR) images using the SR model
-            sr = model_sr(batch['lr'].cuda())         
-            
+            # sr = model_sr(batch['lr'].cuda())    
+            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            sr = model_sr(batch['lr'].to(device))
+    
             # If the SR output is a tuple, extract the relevant part (assuming it's the first element)
             if isinstance(sr, tuple):
                 sr = sr[0].cuda()
